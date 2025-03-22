@@ -4,14 +4,14 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="424a1404-704d-4e57-acf7-c4363e117d15" name="Changes" comment="">
+    <list default="true" id="3d1582bf-e5ca-41da-9164-7fedb97d0135" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/lib/screens/download_screen.dart" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/lib/screens/home_screen.dart" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/lib/screens/quality_screen.dart" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/lib/screens/splash_screen.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/utils/constants.dart" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/lib/widgets/bottom_nav.dart" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/lib/widgets/platform_icons.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,17 +31,16 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 1
-}</component>
-  <component name="ProjectId" id="2uf7KBuaiK6TGzRxq7os7vJbl8u" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="2ugZDWejueSzKyLAbplqp6Rd3KT" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Flutter Test.tests in widget_test.dart.executor": "Run",
     "Flutter.main.dart.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
@@ -50,30 +49,20 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "fronendapp001",
     "io.flutter.reload.alreadyRun": "true",
     "kotlin-language-version-configured": "true",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "device.mirroring",
     "show.migrate.to.gradle.popup": "false"
   }
 }]]></component>
-  <component name="RunManager">
-    <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
-      <option name="filePath" value="$PROJECT_DIR$/lib/main.dart" />
-      <method v="2" />
-    </configuration>
-  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="424a1404-704d-4e57-acf7-c4363e117d15" name="Changes" comment="" />
-      <created>1742627719256</created>
+      <changelist id="3d1582bf-e5ca-41da-9164-7fedb97d0135" name="Changes" comment="" />
+      <created>1742672064365</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1742627719256</updated>
+      <updated>1742672064365</updated>
     </task>
     <servers />
   </component>
