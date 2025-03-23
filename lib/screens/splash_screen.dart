@@ -115,7 +115,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             ),
             child: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -168,7 +168,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          elevation: 5,
+                          elevation: 8,
                         ),
                         onPressed: () {
                           Navigator.pushReplacement(
