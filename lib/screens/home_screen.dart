@@ -10,6 +10,13 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+// 🆕 Add at the top inside _HomeScreenState
+bool hasFetched = false;
+String videoTitle = '';
+String videoSize = '';
+String thumbnailUrl = '';
+
+
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   String selectedPlatform = 'YouTube';
   final TextEditingController linkController = TextEditingController();
@@ -294,9 +301,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
+
+
+
                       onPressed: () {
-                        // TODO: Fetch Details
+                        setState(() {
+                          hasFetched = true;
+                          videoTitle = "Dead Reckoning Part One";
+                          videoSize = "1.24 GB";
+                          thumbnailUrl = "https://i.imgur.com/Nz0aI4s.jpeg"; // 🖼️ Replace with actual thumbnail if available
+                        });
                       },
+
+
+
+
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF1E65FF),
                         shape: RoundedRectangleBorder(
@@ -315,47 +334,66 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   const SizedBox(height: 20),
 
                   // 📦 Result Preview Box
-                  Container(
-                    height: 230, // <-- 🆕 Set the height you want
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF8F9FF),
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: const Color(0xFF1E65FF)),
-                    ),
-                    child: Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            '',
-                            height: 64,
-                            width: 64,
-                            fit: BoxFit.cover,
+                  if (hasFetched)
+                    Container(
+                      height: 140, // 🔧 Adjusted height to fit content better
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8F9FF),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: const Color(0xFF1E65FF)),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              thumbnailUrl,
+                              height: 64,
+                              width: 64,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  height: 64,
+                                  width: 64,
+                                  color: Colors.grey.shade200,
+                                  child: const Icon(Icons.broken_image, color: Colors.grey),
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        const Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Mission Impossible 7 - Dead Reckoning Part One",
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                "Size: 1.24 GB",
-                                style: TextStyle(fontSize: 12, color: Colors.grey),
-                              ),
-                            ],
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  videoTitle,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  "Size: $videoSize",
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
+
+
+
 
                   const SizedBox(height: 16),
                   Row(
@@ -367,6 +405,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             Icons.play_arrow,
                             color: Colors.white,
                           ),
+
                           label: const Text(
                             "Play",
                             style: TextStyle(
