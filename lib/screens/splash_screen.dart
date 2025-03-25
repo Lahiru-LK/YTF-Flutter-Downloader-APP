@@ -17,6 +17,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   late AnimationController _iconController;
   late Animation<Offset> _iconAnimation;
 
+  bool isLoading = false;
+
+
   final List<List<Color>> _colorSets = [
 
     [Color(0xFF0038FF), Color(0xFFF01EFF)],
@@ -147,7 +150,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                         fontFamily: 'Poppins',
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
                     const Text(
                       'A convenient tool to save videos from your Youtube TikTok Facebook feed with ease.',
                       textAlign: TextAlign.center,
@@ -157,26 +160,54 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                         fontFamily: 'Poppins',
                       ),
                     ),
+
                     const SizedBox(height: 40),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: const Color(0xFF1E65FF),
-                          backgroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 20),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 8,
-                        ),
-                        onPressed: () {
+                        onPressed: () async {
+                          setState(() => isLoading = true);
+                          await Future.delayed(const Duration(milliseconds: 500));
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (_) => const HomeScreen()),
                           );
+                          setState(() => isLoading = false);
                         },
-                        child: const Text(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                                (states) => states.contains(MaterialState.pressed)
+                                ? const Color(0xFFE0E8FF)
+                                : Colors.white,
+                          ),
+                          foregroundColor: MaterialStateProperty.all(const Color(0xFF1E65FF)),
+                          overlayColor: MaterialStateProperty.all(
+                            const Color(0xFF1E65FF).withOpacity(0.06),
+                          ),
+                          elevation: MaterialStateProperty.resolveWith<double>(
+                                (states) => states.contains(MaterialState.pressed) ? 2 : 6,
+                          ),
+                          padding: MaterialStateProperty.resolveWith<EdgeInsets>(
+                                (states) => states.contains(MaterialState.pressed)
+                                ? const EdgeInsets.symmetric(vertical: 18)
+                                : const EdgeInsets.symmetric(vertical: 20),
+                          ),
+                          shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                        ),
+                        child: isLoading
+                            ? const SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            color: Color(0xFF1E65FF),
+                            strokeWidth: 2.5,
+                          ),
+                        )
+                            : const Text(
                           'Continue',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -186,6 +217,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                         ),
                       ),
                     ),
+
+
+
                     const SizedBox(height: 12),
                     const Text(
                       'By tapping "Continue" you confirm that you agree with our privacy policy',
