@@ -16,6 +16,11 @@ class VideoDownloaderApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        textSelectionTheme: const TextSelectionThemeData(
+          selectionColor: Color(0xFFB3D4FF),
+          selectionHandleColor: Color(0xFF1E65FF),
+          cursorColor: Color(0xFF1E65FF),
+        ),
       ),
       home: const SplashScreen(),
     );
