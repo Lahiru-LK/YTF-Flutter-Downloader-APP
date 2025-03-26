@@ -35,6 +35,8 @@ dependencies:
   shimmer: ^3.0.0
   cupertino_icons: ^1.0.8
   youtube_explode_dart: ^2.3.10
+  blur: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
 
 
 
@@ -70,6 +72,7 @@ flutter:
   assets:
     - assets/animations/download.json
     - assets/images/
+    - assets/images/mainLogo.png
 
 
 
@@ -104,3 +107,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/mainLogo.png"

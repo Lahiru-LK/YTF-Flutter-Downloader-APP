@@ -34,6 +34,48 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final TextEditingController linkController = TextEditingController();
   final FocusNode _linkFocusNode = FocusNode();
 
+  BottomNavigationBarItem _buildNavBarItem(String iconPath, String label, int index) {
+    return BottomNavigationBarItem(
+      icon: TweenAnimationBuilder<double>(
+        tween: Tween<double>(
+          begin: 1.0,
+          end: _currentIndex == index ? 1.2 : 1.0,
+        ),
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOutBack,
+        builder: (context, scale, child) {
+          return Column(
+            children: [
+              Transform.scale(
+                scale: scale,
+                child: Image.asset(
+                  iconPath,
+                  width: 28,
+                  height: 28,
+                  color: _currentIndex == index
+                      ? const Color(0xFF1E65FF)
+                      : Colors.grey,
+                ),
+              ),
+              const SizedBox(height: 4),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: 4,
+                width: _currentIndex == index ? 20 : 0,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E65FF),
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+      label: label,
+    );
+  }
+
+
   String extractYouTubeVideoId(String url) {
     try {
       Uri uri = Uri.parse(url);
@@ -435,9 +477,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      onPressed: isLoading
-                          ? null
-                          : () async {
+                      onPressed: () async {
+                        if (isLoading) return; // ✅ prevent multiple taps manually
+
                         String link = linkController.text.trim();
                         if (!link.startsWith("http")) {
                           link = "https://$link";
@@ -460,8 +502,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         print("🔗 Fetching for: $finalUrl");
 
                         try {
-                          final details =
-                          await VideoDownloadService.fetchYouTubeDetails(finalUrl);
+                          final details = await VideoDownloadService.fetchYouTubeDetails(finalUrl);
                           setState(() {
                             hasFetched = true;
                             videoTitle = details['title'] ?? "Unknown Title";
@@ -479,20 +520,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       },
                       icon: isLoading
                           ? const SizedBox(
-                        height: 22,
-                        width: 22,
+                        height: 20,
+                        width: 20,
                         child: CircularProgressIndicator(
                           color: Colors.white,
                           strokeWidth: 2.5,
                         ),
                       )
                           : const Icon(Icons.search_rounded, color: Colors.white),
-                      label: Text(
-                        isLoading ? "Fetching..." : "Analyze Video",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                      label: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: Text(
+                          isLoading ? "Fetching..." : "Analyze Video",
+                          key: ValueKey(isLoading),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
@@ -745,11 +790,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           // TODO: Copy to clipboard logic
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFEBF3FF),
+                          backgroundColor: const Color(0xFF1E65FF),
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(12),
                         ),
-                        child: const Icon(Icons.copy, color: Colors.black87),
+                        child: const Icon(Icons.copy, color: Colors.white),
                       ),
                     ],
                   ),
@@ -766,87 +811,45 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
 
 
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: const Color(0xFF1E65FF),
-        unselectedItemColor: Colors.grey,
-        currentIndex: _currentIndex, // ✅ No = 0 here
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: TweenAnimationBuilder(
-              tween: Tween<double>(
-                begin: 1.0,
-                end: _currentIndex == 0 ? 1.2 : 1.0,
-              ),
-              duration: const Duration(milliseconds: 300),
-              builder: (context, scale, child) {
-                return Transform.scale(
-                  scale: scale,
-                  child: Image.asset(
-                    'assets/images/home.png',
-                    width: 30,
-                    height: 30,
-                    color: _currentIndex == 0
-                        ? const Color(0xFF1E65FF)
-                        : Colors.grey,
-                  ),
-                );
-              },
-            ),
-            label: 'Home',
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(22),
+            topRight: Radius.circular(22),
           ),
-          BottomNavigationBarItem(
-            icon: TweenAnimationBuilder(
-              tween: Tween<double>(
-                begin: 1.0,
-                end: _currentIndex == 1 ? 1.2 : 1.0,
-              ),
-              duration: const Duration(milliseconds: 300),
-              builder: (context, scale, child) {
-                return Transform.scale(
-                  scale: scale,
-                  child: Image.asset(
-                    'assets/images/play-circle.png',
-                    width: 30,
-                    height: 30,
-                    color: _currentIndex == 1
-                        ? const Color(0xFF1E65FF)
-                        : Colors.grey,
-                  ),
-                );
-              },
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 10,
+              offset: Offset(0, -2),
             ),
-            label: 'Watch',
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(22),
+            topRight: Radius.circular(22),
           ),
-          BottomNavigationBarItem(
-            icon: TweenAnimationBuilder(
-              tween: Tween<double>(
-                begin: 1.0,
-                end: _currentIndex == 2 ? 1.2 : 1.0,
-              ),
-              duration: const Duration(milliseconds: 300),
-              builder: (context, scale, child) {
-                return Transform.scale(
-                  scale: scale,
-                  child: Image.asset(
-                    'assets/images/cloud-download-alt.png',
-                    width: 30,
-                    height: 30,
-                    color: _currentIndex == 2
-                        ? const Color(0xFF1E65FF)
-                        : Colors.grey,
-                  ),
-                );
-              },
-            ),
-            label: 'Saved',
+          child: BottomNavigationBar(
+            selectedItemColor: const Color(0xFF1E65FF),
+            unselectedItemColor: Colors.grey,
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            type: BottomNavigationBarType.fixed,
+            items: [
+              _buildNavBarItem('assets/images/home.png', 'Home', 0),
+              _buildNavBarItem('assets/images/play-circle.png', 'Watch', 1),
+              _buildNavBarItem('assets/images/cloud-download-alt.png', 'Saved', 2),
+            ],
           ),
-        ],
+        ),
       ),
+
 
 
 
