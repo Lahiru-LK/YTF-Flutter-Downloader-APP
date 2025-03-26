@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 class DownloadQualityModal extends StatefulWidget {
-  final VoidCallback onSavePressed;
-  final VoidCallback onWatchPressed;
+  final List<Map<String, String>> qualities;
+  final Function(Map<String, String>) onQualitySelected;
+
+
 
   const DownloadQualityModal({
     super.key,
-    required this.onSavePressed,
-    required this.onWatchPressed,
+    required this.qualities,
+    required this.onQualitySelected,
   });
 
   @override
@@ -15,16 +17,7 @@ class DownloadQualityModal extends StatefulWidget {
 }
 
 class _DownloadQualityModalState extends State<DownloadQualityModal> {
-  String selectedQuality = ''; // ✅ Selected quality
-
-  final List<Map<String, String>> qualities = [
-    {'label': '240P', 'size': '37 MB'},
-    {'label': '360P', 'size': '54 MB'},
-    {'label': '480P', 'size': '72 MB'},
-    {'label': '720P HD', 'size': '91 MB'},
-    {'label': '1080P HD', 'size': '109 MB'},
-    {'label': '4K', 'size': '147 MB'},
-  ];
+  String selectedQuality = ''; // ✅ User selected label (e.g., 720p)
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +51,7 @@ class _DownloadQualityModalState extends State<DownloadQualityModal> {
             spacing: 12,
             runSpacing: 12,
             alignment: WrapAlignment.center,
-            children: qualities.map((q) {
+            children: widget.qualities.map((q) {
               final isSelected = selectedQuality == q['label'];
 
               return GestureDetector(
@@ -120,7 +113,14 @@ class _DownloadQualityModalState extends State<DownloadQualityModal> {
             child: ElevatedButton.icon(
               onPressed: () {
                 if (selectedQuality.isNotEmpty) {
-                  widget.onSavePressed();
+                  final selected = widget.qualities.firstWhere(
+                        (q) => q['label'] == selectedQuality,
+                    orElse: () => {},
+                  );
+
+                  if (selected.isNotEmpty) {
+                    widget.onQualitySelected(selected);
+                  }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Please select a quality")),
@@ -143,8 +143,24 @@ class _DownloadQualityModalState extends State<DownloadQualityModal> {
           ),
 
           const SizedBox(height: 12),
+
           TextButton(
-            onPressed: widget.onWatchPressed,
+            onPressed: () {
+              if (selectedQuality.isNotEmpty) {
+                final selected = widget.qualities.firstWhere(
+                      (q) => q['label'] == selectedQuality,
+                  orElse: () => {},
+                );
+
+                if (selected.isNotEmpty) {
+                  widget.onQualitySelected(selected);
+                }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Please select a quality")),
+                );
+              }
+            },
             child: const Text(
               "Watch Video",
               style: TextStyle(
