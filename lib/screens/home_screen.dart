@@ -24,6 +24,8 @@ String videoSize = '';
 String thumbnailUrl = '';
 bool isLoading = false;
 bool _isDisposed = false;
+bool isDownloading = false;
+
 
 
 
@@ -432,9 +434,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-
-                      onPressed: () async {
+                    child: ElevatedButton.icon(
+                      onPressed: isLoading
+                          ? null
+                          : () async {
                         String link = linkController.text.trim();
                         if (!link.startsWith("http")) {
                           link = "https://$link";
@@ -444,7 +447,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           isLoading = true;
                         });
 
-                        // ✅ Extract video ID safely
                         String videoId = extractYouTubeVideoId(link);
                         if (videoId.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -458,7 +460,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         print("🔗 Fetching for: $finalUrl");
 
                         try {
-                          final details = await VideoDownloadService.fetchYouTubeDetails(finalUrl);
+                          final details =
+                          await VideoDownloadService.fetchYouTubeDetails(finalUrl);
                           setState(() {
                             hasFetched = true;
                             videoTitle = details['title'] ?? "Unknown Title";
@@ -474,37 +477,35 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                         setState(() => isLoading = false);
                       },
-
-
-
-
+                      icon: isLoading
+                          ? const SizedBox(
+                        height: 22,
+                        width: 22,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2.5,
+                        ),
+                      )
+                          : const Icon(Icons.search_rounded, color: Colors.white),
+                      label: Text(
+                        isLoading ? "Fetching..." : "Analyze Video",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF1E65FF),
-                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 18),
                         elevation: 8,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
-                      child: isLoading
-                          ? const SizedBox(
-                        height: 24,
-                        width: 24,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2.5,
-                        ),
-                      )
-                          : const Text(
-                        "Fetch Details",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
                     ),
                   ),
+
 
 
 
@@ -610,6 +611,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                       const SizedBox(width: 10),
                       // ⬇ Download Button
+                      // ⬇ Download Button
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () async {
@@ -618,11 +620,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               link = "https://$link";
                             }
 
+                            setState(() {
+                              isDownloading = true;
+                            });
+
                             final videoId = extractYouTubeVideoId(link);
                             if (videoId.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text("Invalid YouTube link.")),
                               );
+                              setState(() {
+                                isDownloading = false;
+                              });
                               return;
                             }
 
@@ -635,10 +644,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text("No downloadable qualities found.")),
                                 );
+                                setState(() {
+                                  isDownloading = false;
+                                });
                                 return;
                               }
 
-                              // Show modal to choose video quality
+                              setState(() {
+                                isDownloading = false;
+                              });
+
                               showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
@@ -654,7 +669,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                                     Navigator.pop(context);
 
-                                    // 🔽 Placeholder for download logic (you can integrate Dio here)
                                     print("⬇ Downloading $label ($size)");
                                     print("▶️ URL: $selectedUrl");
 
@@ -669,15 +683,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text("Failed to fetch video qualities.")),
                               );
+                              setState(() {
+                                isDownloading = false;
+                              });
                             }
                           },
-                          icon: const Icon(Icons.download_rounded, color: Colors.white),
-                          label: const Text(
+                          icon: isDownloading
+                              ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                              : const Icon(Icons.download_rounded, color: Colors.white),
+                          label: isDownloading
+                              ? const Text(
+                            "Loading...",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          )
+                              : const Text(
                             "Download",
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 16,
                               fontWeight: FontWeight.bold,
+                              fontSize: 16,
                             ),
                           ),
                           style: ButtonStyle(
