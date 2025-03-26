@@ -510,7 +510,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                   const SizedBox(height: 20),
 
-                  // 📦 Result Preview Box
+                  //  Result Preview Box
                   if (hasFetched)
                     Container(
                       padding: const EdgeInsets.all(12),
@@ -612,18 +612,64 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       // ⬇ Download Button
                       Expanded(
                         child: ElevatedButton.icon(
-                          onPressed: () {
-                            showModalBottomSheet(
-                              context: context,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-                              ),
-                              isScrollControlled: true,
-                              builder: (context) => DownloadQualityModal(
-                                onSavePressed: () => Navigator.pop(context),
-                                onWatchPressed: () => Navigator.pop(context),
-                              ),
-                            );
+                          onPressed: () async {
+                            String link = linkController.text.trim();
+                            if (!link.startsWith("http")) {
+                              link = "https://$link";
+                            }
+
+                            final videoId = extractYouTubeVideoId(link);
+                            if (videoId.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("Invalid YouTube link.")),
+                              );
+                              return;
+                            }
+
+                            final finalUrl = "https://www.youtube.com/watch?v=$videoId";
+
+                            try {
+                              final qualities = await VideoDownloadService.getAvailableQualities(finalUrl);
+
+                              if (qualities.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text("No downloadable qualities found.")),
+                                );
+                                return;
+                              }
+
+                              // Show modal to choose video quality
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                                ),
+                                builder: (context) => DownloadQualityModal(
+                                  qualities: qualities,
+                                  onQualitySelected: (selected) async {
+                                    final selectedUrl = selected['url']!;
+                                    final label = selected['label']!;
+                                    final size = selected['size']!;
+
+                                    Navigator.pop(context);
+
+                                    // 🔽 Placeholder for download logic (you can integrate Dio here)
+                                    print("⬇ Downloading $label ($size)");
+                                    print("▶️ URL: $selectedUrl");
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text("Download started: $label")),
+                                    );
+                                  },
+                                ),
+                              );
+                            } catch (e) {
+                              print("❌ Error fetching qualities: $e");
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("Failed to fetch video qualities.")),
+                              );
+                            }
                           },
                           icon: const Icon(Icons.download_rounded, color: Colors.white),
                           label: const Text(
@@ -634,24 +680,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-
-
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                                  (states) {
-                                if (states.contains(MaterialState.pressed)) {
-                                  return const Color(0xFF1539AA);
-                                }
-                                return const Color(0xFF1E65FF);
-                              },
+                                  (states) => states.contains(MaterialState.pressed)
+                                  ? const Color(0xFF1539AA)
+                                  : const Color(0xFF1E65FF),
                             ),
                             overlayColor: MaterialStateProperty.all(Colors.white24),
-                            padding: MaterialStateProperty.resolveWith<EdgeInsets>(
-                                  (states) {
-                                return states.contains(MaterialState.pressed)
-                                    ? const EdgeInsets.symmetric(vertical: 12)
-                                    : const EdgeInsets.symmetric(vertical: 14);
-                              },
+                            padding: MaterialStateProperty.all(
+                              const EdgeInsets.symmetric(vertical: 14),
                             ),
                             elevation: MaterialStateProperty.resolveWith<double>(
                                   (states) => states.contains(MaterialState.pressed) ? 2 : 6,
@@ -662,6 +699,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
+
+
 
                       const SizedBox(width: 10),
 
