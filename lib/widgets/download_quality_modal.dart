@@ -61,7 +61,7 @@ class _DownloadQualityModalState extends State<DownloadQualityModal> {
                   });
                 },
                 child: Container(
-                  width: 100,
+                  width: 150,
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(
                     color: isSelected ? const Color(0xFF1E65FF) : Colors.white,
