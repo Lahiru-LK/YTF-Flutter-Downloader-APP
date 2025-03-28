@@ -6,10 +6,6 @@ import '../widgets/download_quality_modal.dart';
 import 'package:flutter/services.dart';
 import '../services/video_download_service.dart';
 
-
-
-
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -26,15 +22,13 @@ bool isLoading = false;
 bool _isDisposed = false;
 bool isDownloading = false;
 
-
-
-
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   String selectedPlatform = 'YouTube';
   final TextEditingController linkController = TextEditingController();
   final FocusNode _linkFocusNode = FocusNode();
 
-  BottomNavigationBarItem _buildNavBarItem(String iconPath, String label, int index) {
+  BottomNavigationBarItem _buildNavBarItem(
+      String iconPath, String label, int index) {
     return BottomNavigationBarItem(
       icon: TweenAnimationBuilder<double>(
         tween: Tween<double>(
@@ -75,7 +69,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-
   String extractYouTubeVideoId(String url) {
     try {
       Uri uri = Uri.parse(url);
@@ -96,16 +89,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return "";
   }
 
-
-
-
   final List<Map<String, String>> platforms = [
     {'name': 'YouTube', 'icon': 'assets/images/youtube.png'},
     {'name': 'Facebook', 'icon': 'assets/images/facebook.png'},
     {'name': 'TikTok', 'icon': 'assets/images/tiktolk.png'},
   ];
-
-
 
   late AnimationController _scaleController;
   late Animation<double> _scaleAnimation;
@@ -148,7 +136,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
-
   String detectPlatform(String url) {
     url = url.toLowerCase();
     if (url.contains('youtube.com') || url.contains('youtu.be')) {
@@ -161,9 +148,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       return 'Unknown';
     }
   }
-
-
-
 
   int _currentIndex = 0;
 
@@ -214,14 +198,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
-
   @override
   void dispose() {
     _isDisposed = true; // mark disposed
     _gradientController.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -257,7 +239,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                     ],
                   ),
-                  padding: const EdgeInsets.only(top: 40, left: 18, right: 18, bottom: 18),
+                  padding: const EdgeInsets.only(
+                      top: 40, left: 18, right: 18, bottom: 18),
                   child: SafeArea(child: child ?? const SizedBox.shrink()),
                 );
               },
@@ -283,13 +266,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Scaffold.of(context).openDrawer(); // 👈 Already correct
+                          Scaffold.of(context)
+                              .openDrawer(); // 👈 Already correct
                         },
                         child: const Icon(Icons.settings, color: Colors.white),
                       ),
-
                       const SizedBox(width: 12),
-                      const Icon(Icons.workspace_premium_outlined, color: Colors.white),
+                      const Icon(Icons.workspace_premium_outlined,
+                          color: Colors.white),
                     ],
                   ),
                 ],
@@ -298,21 +282,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           },
         ),
       ),
-
       drawer: CustomDrawer(
         color1: _color1,
         color2: _color2,
         gradientController: _gradientController,
       ),
-
       body: SingleChildScrollView(
-        padding: const EdgeInsets.only(top: 30, left: 18, right: 18, bottom: 18),
-
+        padding:
+            const EdgeInsets.only(top: 30, left: 18, right: 18, bottom: 18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              padding: const EdgeInsets.only(top: 10, left: 18, right: 18, bottom: 18),
+              padding: const EdgeInsets.only(
+                  top: 10, left: 18, right: 18, bottom: 18),
               decoration: BoxDecoration(
                 color: const Color(0xFFDCE8FF),
                 borderRadius: BorderRadius.circular(20),
@@ -339,8 +322,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         });
                       },
                       child: ScaleTransition(
-                        scale: isSelected ? _scaleAnimation : const AlwaysStoppedAnimation(1.0),
-
+                        scale: isSelected
+                            ? _scaleAnimation
+                            : const AlwaysStoppedAnimation(1.0),
                         child: Column(
                           children: [
                             AnimatedContainer(
@@ -353,8 +337,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 gradient: (hasFetched && isSelected)
                                     ? _getPlatformGradient(platform['name']!)
                                     : const LinearGradient(
-                                  colors: [Color(0xFFF4F4F4), Color(0xFFCDCDCD)],
-                                ),
+                                        colors: [
+                                          Color(0xFFF4F4F4),
+                                          Color(0xFFCDCDCD)
+                                        ],
+                                      ),
                                 boxShadow: [
                                   if (isSelected)
                                     const BoxShadow(
@@ -375,22 +362,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             Text(
                               platform['name']!,
                               style: TextStyle(
-                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                color: isSelected ? Colors.blueAccent : Colors.grey,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: isSelected
+                                    ? Colors.blueAccent
+                                    : Colors.grey,
                                 fontSize: 14,
                               ),
                             ),
                           ],
                         ),
-
                       ),
                     );
                   }).toList(),
                 ),
               ),
             ),
-
-
             const SizedBox(height: 15),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
@@ -398,19 +386,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 color: Color(0xFFDCE8FF),
                 borderRadius: BorderRadius.circular(18),
                 boxShadow: const [
-                  BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
+                  BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 8,
+                      offset: Offset(0, 4)),
                 ],
               ),
-
-
-
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   TextField(
                     controller: linkController,
-                    focusNode: _linkFocusNode, // Assign the focus node
+                    focusNode: _linkFocusNode,
+                    // Assign the focus node
                     keyboardType: TextInputType.url,
                     enableSuggestions: false,
                     autocorrect: false,
@@ -419,9 +407,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       fontWeight: FontWeight.bold,
                     ),
 
-
                     decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 25),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 25),
                       hintText: 'Paste Terabox URL',
                       hintStyle: const TextStyle(color: Colors.grey),
                       filled: true,
@@ -429,8 +417,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       prefixIcon: const Icon(Icons.link, color: Colors.blue),
                       suffixIcon: IconButton(
                           icon: const Icon(Icons.paste, color: Colors.blue),
-
-
                           onPressed: () async {
                             final data = await Clipboard.getData('text/plain');
                             final pastedText = data?.text?.trim() ?? "";
@@ -443,17 +429,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   ..reset()
                                   ..forward();
                               });
-
-
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Clipboard is empty.")),
+                                const SnackBar(
+                                    content: Text("Clipboard is empty.")),
                               );
                             }
-                          }
-                      ),
-
-
+                          }),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(17),
                         borderSide: BorderSide.none,
@@ -461,7 +443,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ),
                     onChanged: (value) {
                       final detected = detectPlatform(value);
-                      if (detected != selectedPlatform && detected != 'Unknown') {
+                      if (detected != selectedPlatform &&
+                          detected != 'Unknown') {
                         setState(() {
                           selectedPlatform = detected;
                           _scaleController
@@ -472,13 +455,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     },
                   ),
 
-
                   const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: () async {
-                        if (isLoading) return; // ✅ prevent multiple taps manually
+                        if (isLoading)
+                          return; // ✅ prevent multiple taps manually
 
                         String link = linkController.text.trim();
                         if (!link.startsWith("http")) {
@@ -492,17 +475,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         String videoId = extractYouTubeVideoId(link);
                         if (videoId.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Invalid YouTube link.")),
+                            const SnackBar(
+                                content: Text("Invalid YouTube link.")),
                           );
                           setState(() => isLoading = false);
                           return;
                         }
 
-                        String finalUrl = "https://www.youtube.com/watch?v=$videoId";
+                        String finalUrl =
+                            "https://www.youtube.com/watch?v=$videoId";
                         print("🔗 Fetching for: $finalUrl");
 
                         try {
-                          final details = await VideoDownloadService.fetchYouTubeDetails(finalUrl);
+                          final details =
+                              await VideoDownloadService.fetchYouTubeDetails(
+                                  finalUrl);
+
+                          if (details.isEmpty) {
+                            throw Exception("No details returned");
+                          }
+
                           setState(() {
                             hasFetched = true;
                             videoTitle = details['title'] ?? "Unknown Title";
@@ -512,7 +504,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         } catch (e) {
                           print("❌ Error: $e");
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Failed to fetch video details.")),
+                            const SnackBar(
+                                content:
+                                    Text("Failed to fetch video details.")),
                           );
                         }
 
@@ -520,14 +514,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       },
                       icon: isLoading
                           ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2.5,
-                        ),
-                      )
-                          : const Icon(Icons.search_rounded, color: Colors.white),
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2.5,
+                              ),
+                            )
+                          : const Icon(Icons.search_rounded,
+                              color: Colors.white),
                       label: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 300),
                         child: Text(
@@ -550,9 +545,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-
-
-
 
                   const SizedBox(height: 20),
 
@@ -579,7 +571,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 return Container(
                                   height: 180,
                                   color: Colors.grey.shade200,
-                                  child: const Icon(Icons.broken_image, color: Colors.grey),
+                                  child: const Icon(Icons.broken_image,
+                                      color: Colors.grey),
                                 );
                               },
                             ),
@@ -606,8 +599,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                     ),
 
-
-
                   const SizedBox(height: 16),
                   Row(
                     children: [
@@ -617,7 +608,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           onPressed: () {
                             // TODO: Play logic
                           },
-                          icon: const Icon(Icons.play_arrow, color: Colors.white),
+                          icon:
+                              const Icon(Icons.play_arrow, color: Colors.white),
                           label: const Text(
                             "Play",
                             style: TextStyle(
@@ -627,32 +619,39 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             ),
                           ),
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                                  (states) {
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                              (states) {
                                 if (states.contains(MaterialState.pressed)) {
-                                  return const Color(0xFF1539AA); // Darker blue when pressed
+                                  return const Color(
+                                      0xFF1539AA); // Darker blue when pressed
                                 }
                                 return const Color(0xFF1E65FF); // Default
                               },
                             ),
-                            overlayColor: MaterialStateProperty.all(Colors.white24),
-                            padding: MaterialStateProperty.resolveWith<EdgeInsets>(
-                                  (states) {
+                            overlayColor:
+                                MaterialStateProperty.all(Colors.white24),
+                            padding:
+                                MaterialStateProperty.resolveWith<EdgeInsets>(
+                              (states) {
                                 return states.contains(MaterialState.pressed)
                                     ? const EdgeInsets.symmetric(vertical: 12)
                                     : const EdgeInsets.symmetric(vertical: 14);
                               },
                             ),
-                            elevation: MaterialStateProperty.resolveWith<double>(
-                                  (states) => states.contains(MaterialState.pressed) ? 2 : 6,
+                            elevation:
+                                MaterialStateProperty.resolveWith<double>(
+                              (states) => states.contains(MaterialState.pressed)
+                                  ? 2
+                                  : 6,
                             ),
                             shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50)),
                             ),
                           ),
                         ),
                       ),
-
 
                       const SizedBox(width: 10),
                       // ⬇ Download Button
@@ -672,7 +671,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             final videoId = extractYouTubeVideoId(link);
                             if (videoId.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Invalid YouTube link.")),
+                                const SnackBar(
+                                    content: Text("Invalid YouTube link.")),
                               );
                               setState(() {
                                 isDownloading = false;
@@ -680,14 +680,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               return;
                             }
 
-                            final finalUrl = "https://www.youtube.com/watch?v=$videoId";
+                            final finalUrl =
+                                "https://www.youtube.com/watch?v=$videoId";
 
                             try {
-                              final qualities = await VideoDownloadService.getAvailableQualities(finalUrl);
+                              final qualities = await VideoDownloadService
+                                  .getAvailableQualities(finalUrl);
 
                               if (qualities.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("No downloadable qualities found.")),
+                                  const SnackBar(
+                                      content: Text(
+                                          "No downloadable qualities found.")),
                                 );
                                 setState(() {
                                   isDownloading = false;
@@ -703,7 +707,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 context: context,
                                 isScrollControlled: true,
                                 shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(30)),
                                 ),
                                 builder: (context) => DownloadQualityModal(
                                   qualities: qualities,
@@ -718,17 +723,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     print("▶️ URL: $selectedUrl");
 
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text("Download started: $label")),
+                                      SnackBar(
+                                          content:
+                                              Text("Download started: $label")),
                                     );
                                   },
                                 ),
                               );
-
-
                             } catch (e) {
                               print("❌ Error fetching qualities: $e");
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Failed to fetch video qualities.")),
+                                const SnackBar(
+                                    content: Text(
+                                        "Failed to fetch video qualities.")),
                               );
                               setState(() {
                                 isDownloading = false;
@@ -737,52 +744,57 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           },
                           icon: isDownloading
                               ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
-                          )
-                              : const Icon(Icons.download_rounded, color: Colors.white),
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Icon(Icons.download_rounded,
+                                  color: Colors.white),
                           label: isDownloading
                               ? const Text(
-                            "Loading...",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          )
+                                  "Loading...",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                )
                               : const Text(
-                            "Download",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
+                                  "Download",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                                  (states) => states.contains(MaterialState.pressed)
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                              (states) => states.contains(MaterialState.pressed)
                                   ? const Color(0xFF1539AA)
                                   : const Color(0xFF1E65FF),
                             ),
-                            overlayColor: MaterialStateProperty.all(Colors.white24),
+                            overlayColor:
+                                MaterialStateProperty.all(Colors.white24),
                             padding: MaterialStateProperty.all(
                               const EdgeInsets.symmetric(vertical: 14),
                             ),
-                            elevation: MaterialStateProperty.resolveWith<double>(
-                                  (states) => states.contains(MaterialState.pressed) ? 2 : 6,
+                            elevation:
+                                MaterialStateProperty.resolveWith<double>(
+                              (states) => states.contains(MaterialState.pressed)
+                                  ? 2
+                                  : 6,
                             ),
                             shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50)),
                             ),
                           ),
                         ),
                       ),
-
-
 
                       const SizedBox(width: 10),
 
@@ -800,19 +812,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                     ],
                   ),
-
-
-
-
                 ],
               ),
             ),
-
           ],
         ),
       ),
-
-
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           color: Colors.white,
@@ -846,15 +851,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             items: [
               _buildNavBarItem('assets/images/home.png', 'Home', 0),
               _buildNavBarItem('assets/images/play-circle.png', 'Watch', 1),
-              _buildNavBarItem('assets/images/cloud-download-alt.png', 'Saved', 2),
+              _buildNavBarItem(
+                  'assets/images/cloud-download-alt.png', 'Saved', 2),
             ],
           ),
         ),
       ),
-
-
-
-
     );
   }
 }
