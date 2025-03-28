@@ -34,6 +34,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   late Animation<Offset> _iconAnimation;
 
   bool isLoading = false;
+  bool _isDisposed = false;
 
 
   final List<List<Color>> _colorSets = [
@@ -96,15 +97,21 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       end: _colorSets[nextIndex][1],
     ).animate(_gradientController);
 
-    _gradientController.reset();
-    _gradientController.forward();
+    if (!_isDisposed) {
+      _gradientController.reset();
+      _gradientController.forward();
+    }
 
     _currentIndex = nextIndex;
   }
 
+
+
+
   void _changeGradient() {
-    _setupAnimation();
+    if (!_isDisposed) _setupAnimation(); // ✅ Only run if not disposed
   }
+
 
   @override
   void dispose() {

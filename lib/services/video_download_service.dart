@@ -63,31 +63,37 @@ class VideoDownloadService {
       final video = await yt.videos.get(url);
       final manifest = await yt.videos.streamsClient.getManifest(video.id);
 
-      if (manifest.muxed.isNotEmpty) {
-        final streamInfo = manifest.muxed.withHighestBitrate();
-        final sizeInMB = streamInfo.size.totalMegaBytes.toStringAsFixed(2);
+      String title = video.title;
+      String thumbnail = video.thumbnails.highResUrl;
+      String size = 'Unknown';
 
-        return {
-          'title': video.title,
-          'thumbnail': video.thumbnails.highResUrl,
-          'size': '$sizeInMB MB',
-        };
+      if (manifest.muxed.isNotEmpty) {
+        final stream = manifest.muxed.withHighestBitrate();
+        size = '${stream.size.totalMegaBytes.toStringAsFixed(2)} MB';
+      } else {
+        final videoStream = manifest.videoOnly.firstWhereOrNull((e) => true);
+        final audioStream = manifest.audioOnly.firstWhereOrNull((e) => true);
+
+        if (videoStream != null && audioStream != null) {
+          final combinedSize = videoStream.size.totalMegaBytes + audioStream.size.totalMegaBytes;
+          size = '${combinedSize.toStringAsFixed(2)} MB (Video+Audio)';
+        }
       }
 
-      final videoStream = manifest.videoOnly.withHighestBitrate();
-      final audioStream = manifest.audioOnly.withHighestBitrate();
-      final combinedSize = videoStream.size.totalMegaBytes + audioStream.size.totalMegaBytes;
-
       return {
-        'title': video.title,
-        'thumbnail': video.thumbnails.highResUrl,
-        'size': '${combinedSize.toStringAsFixed(2)} MB (Video+Audio)',
+        'title': title,
+        'thumbnail': thumbnail,
+        'size': size,
       };
     } catch (e) {
       print("❌ Error fetching video details: $e");
-      rethrow;
+      return {};
     } finally {
       yt.close();
     }
   }
+
+
+
+
 }
